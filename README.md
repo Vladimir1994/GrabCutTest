@@ -1,0 +1,1 @@
+A small application which shows grab cut algorithm capabilities.
