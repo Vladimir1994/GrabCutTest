@@ -38,7 +38,7 @@ GrabCutApp::~GrabCutApp()
     destroyWindow(windowName_);
 }
 
-bool GrabCutApp::ImageRead(const string &imFileName)
+bool GrabCutApp::imageRead(const string &imFileName)
 {
     imFileName_ = imFileName;
 
@@ -68,11 +68,11 @@ bool GrabCutApp::ImageRead(const string &imFileName)
     return true;
 }
 
-bool GrabCutApp::ImageShow()
+bool GrabCutApp::imageShow()
 {
     if (imageLoaded_) {
         activeImage_ = image_;
-        DrawImage();
+        drawImage();
         cout << "show image" << endl;
         return true;
     }
@@ -82,27 +82,27 @@ bool GrabCutApp::ImageShow()
     }
 }
 
-bool GrabCutApp::ForeGroundShow()
+bool GrabCutApp::foreGroundShow()
 {
     if (!cutDone_)
         return false;
     activeImage_ = fgResult_;
-    DrawImage();
+    drawImage();
     cout << "show foreground" << endl;
     return true;
 }
 
-bool GrabCutApp::BackGroundShow()
+bool GrabCutApp::backGroundShow()
 {
     if (!cutDone_)
         return false;
     activeImage_ = bgResult_;
-    DrawImage();
+    drawImage();
     cout << "show background" << endl;
     return true;
 }
 
-void GrabCutApp::NormalizeWindowSize() const
+void GrabCutApp::normalizeWindowSize() const
 {
     Size imSize = image_->size();
     if ((unsigned int)imSize.width > imageShowWidth_) {
@@ -117,7 +117,7 @@ string GrabCutApp::windowName() const
     return windowName_;
 }
 
-void GrabCutApp::MouseCallBack(int event, int x, int y, int flags, void *userdata)
+void GrabCutApp::mouseCallBack(int event, int x, int y, int flags, void *)
 {
     if (!isDrawMarking_)
         return;
@@ -132,7 +132,7 @@ void GrabCutApp::MouseCallBack(int event, int x, int y, int flags, void *userdat
 
             rectState_ = IN_PROGRESS;
 
-            DrawImage();
+            drawImage();
         } else if (event == EVENT_LBUTTONUP) {
             Size imSize = image_->size();
             secondMousePoint_.x = max(0, secondMousePoint_.x);
@@ -156,24 +156,24 @@ void GrabCutApp::MouseCallBack(int event, int x, int y, int flags, void *userdat
                     secondMousePoint_.x = x;
                     secondMousePoint_.y = y;
                     mouseMoveCounter_ = mouseMoveCounterPeriod_;
-                    DrawImage();
+                    drawImage();
                 }
             }
         } else if (event == EVENT_RBUTTONDOWN) {
             rectState_ = NOT_SET;
-            DrawImage();
+            drawImage();
         }
     } else {
         if (event == EVENT_LBUTTONDOWN) {
             leftButtonPressed_ = true;
             userMaskSet_ = true;
             fgPixels_.append(Point3i(x, y, markingCircleRadius_));
-            DrawImage();
+            drawImage();
         } else if (event == EVENT_RBUTTONDOWN) {
             rightButtonPressed_ = true;
             userMaskSet_ = true;
             bgPixels_.append(Point3i(x, y, markingCircleRadius_));
-            DrawImage();
+            drawImage();
         } else if (event == EVENT_LBUTTONUP) {
             leftButtonPressed_ = false;
         } else if (event == EVENT_RBUTTONUP) {
@@ -185,11 +185,11 @@ void GrabCutApp::MouseCallBack(int event, int x, int y, int flags, void *userdat
                 if (leftButtonPressed_) {
                     fgPixels_.append(Point3i(x, y, markingCircleRadius_));
                     mouseMoveCounter_ = mouseMoveCounterPeriod_;
-                    DrawImage();
+                    drawImage();
                 } else if (rightButtonPressed_) {
                     bgPixels_.append(Point3i(x, y, markingCircleRadius_));
                     mouseMoveCounter_ = mouseMoveCounterPeriod_;
-                    DrawImage();
+                    drawImage();
                 }
             }
         }
@@ -201,7 +201,7 @@ string GrabCutApp::savePath() const
     return savePath_;
 }
 
-bool GrabCutApp::SetSavePath(const string & p)
+bool GrabCutApp::setSavePath(const string & p)
 {
     QDir dir;
     dir.mkpath(QString(p.c_str()));
@@ -214,7 +214,7 @@ bool GrabCutApp::SetSavePath(const string & p)
     return true;
 }
 
-bool GrabCutApp::SaveResults() const
+bool GrabCutApp::saveResults() const
 {
     if (!cutDone_) {
         cerr << "nothing to save" << endl;
@@ -234,7 +234,7 @@ bool GrabCutApp::SaveResults() const
     }
 }
 
-bool GrabCutApp::SegmentImage()
+bool GrabCutApp::segmentImage()
 {
     cout << "start GrabCut" << endl;
 
@@ -244,7 +244,7 @@ bool GrabCutApp::SegmentImage()
     }
 
     if (userMaskSet_)
-        InitMaskByUserPoints();
+        initMaskByUserPoints();
 
     if (!maskSet_) {
         grabCut(*image_, mask_, markingRect_, bgModel_,
@@ -257,10 +257,10 @@ bool GrabCutApp::SegmentImage()
     }
 
     maskSet_ = true;
-    GenResults();
+    genResults();
 
     cutDone_ = true;
-    ForeGroundShow();
+    foreGroundShow();
     return true;
 }
 
@@ -286,7 +286,7 @@ unsigned int GrabCutApp::gcIterCount() const
     return gcIterCount_;
 }
 
-void GrabCutApp::Reset()
+void GrabCutApp::reset()
 {
     cutDone_ = false;
     gcIterCount_ = 1;
@@ -298,27 +298,27 @@ void GrabCutApp::Reset()
     bgPixels_.clear();
     fgPixels_.clear();
     activeImage_ = image_;
-    DrawImage();
+    drawImage();
     cout << "reset" << endl;
 }
 
-void GrabCutApp::ChangeIsDrawMarking()
+void GrabCutApp::changeIsDrawMarking()
 {
     isDrawMarking_ = !isDrawMarking_;
     if (isDrawMarking_)
         cout << "drawing markring on" << endl;
     else
         cout << "drawing markring off" << endl;
-    DrawImage();
+    drawImage();
 }
 
-void GrabCutApp::MarkingCircleRadiusUp()
+void GrabCutApp::markingCircleRadiusUp()
 {
     markingCircleRadius_ += markingCircleRadiusChangeStep_;
     cout << "marking circle radius is" << markingCircleRadius_ << endl;
 }
 
-void GrabCutApp::MarkingCircleRadiusDown()
+void GrabCutApp::markingCircleRadiusDown()
 {
     if (markingCircleRadius_ > 0) {
         markingCircleRadius_ -= markingCircleRadiusChangeStep_;
@@ -361,7 +361,7 @@ void GrabCutApp::help()
             "\td - decrease circle marking radius\n" << endl;
 }
 
-void GrabCutApp::ChangeVoidColor()
+void GrabCutApp::changeVoidColor()
 {
     if (currentVoidColorIdx_ < (unsigned int)voidColors_.size() - 1)
         currentVoidColorIdx_++;
@@ -372,12 +372,12 @@ void GrabCutApp::ChangeVoidColor()
     cout << "void color is " << voidColor_ << endl;
 
     if (cutDone_) {
-        GenResults();
-        DrawImage();
+        genResults();
+        drawImage();
     }
 }
 
-void GrabCutApp::DrawImage()
+void GrabCutApp::drawImage()
 {
     if ((rectState_ == NOT_SET && !userMaskSet_) || !isDrawMarking_) {
         imshow(windowName_, * activeImage_);
@@ -390,11 +390,11 @@ void GrabCutApp::DrawImage()
         rectangle(imgCopy, firstMousePoint_, secondMousePoint_,
                   Scalar(0, 255, 255), markingLineWidth_);
     if (userMaskSet_)
-        SetBgFgMarkersToImage(imgCopy, Scalar(255, 0, 0), Scalar(0, 0, 255));
+        setBgFgMarkersToImage(imgCopy, Scalar(255, 0, 0), Scalar(0, 0, 255));
     imshow(windowName_, imgCopy);
 }
 
-void GrabCutApp::InitMaskByUserPoints()
+void GrabCutApp::initMaskByUserPoints()
 {
     if (mask_.empty()) {
         Size s = image_->size();
@@ -402,11 +402,11 @@ void GrabCutApp::InitMaskByUserPoints()
         mask_.setTo(Scalar::all(GC_BGD));
     }    
     mask_(markingRect_).setTo(Scalar::all(GC_PR_FGD));
-    SetBgFgMarkersToImage(mask_, Scalar(GC_FGD), Scalar(GC_BGD));
+    setBgFgMarkersToImage(mask_, Scalar(GC_FGD), Scalar(GC_BGD));
     maskSet_ = true;
 }
 
-void GrabCutApp::GenResults()
+void GrabCutApp::genResults()
 {
     Mat mask;
     Mat maskFg;
@@ -428,7 +428,7 @@ void GrabCutApp::GenResults()
     image_->copyTo(*bgResult_, Scalar(255,255,255) - mask);
 }
 
-void GrabCutApp::SetBgFgMarkersToImage(Mat &img, const Scalar &fgMarker,
+void GrabCutApp::setBgFgMarkersToImage(Mat &img, const Scalar &fgMarker,
     const Scalar &bgMarker)
 {
     Point p;
@@ -444,7 +444,7 @@ void GrabCutApp::SetBgFgMarkersToImage(Mat &img, const Scalar &fgMarker,
     }
 }
 
-void on_mouse(int event, int x, int y, int flags, void *param)
+void onMouse(int event, int x, int y, int flags, void *param)
 {
-    GrabCutApp::get().MouseCallBack(event, x, y, flags, param);
+    GrabCutApp::get().mouseCallBack(event, x, y, flags, param);
 }

@@ -10,46 +10,46 @@ int main(int argc, char** argv)
     if (argc != 3)
         return -1;
 
-    if (!GrabCutApp::get().ImageRead(argv[1]))
+    if (!GrabCutApp::get().imageRead(argv[1]))
         return -1;
 
-    GrabCutApp::get().NormalizeWindowSize();
+    GrabCutApp::get().normalizeWindowSize();
 
-    if (!GrabCutApp::get().SetSavePath(argv[2]))
+    if (!GrabCutApp::get().setSavePath(argv[2]))
         return -1;
 
-    if (!GrabCutApp::get().ImageShow())
+    if (!GrabCutApp::get().imageShow())
         return -1;
 
-    setMouseCallback(GrabCutApp::get().windowName(), on_mouse, 0);
+    setMouseCallback(GrabCutApp::get().windowName(), onMouse, 0);
 
     for (;;) {
         int cmd = waitKey(0);
 
         if ((char)cmd == 13) {
-            GrabCutApp::get().SegmentImage();
+            GrabCutApp::get().segmentImage();
         } else if ((char)cmd == 's') {
-            GrabCutApp::get().SaveResults();
+            GrabCutApp::get().saveResults();
         } else if ((char)cmd == 'i') {
-            GrabCutApp::get().ImageShow();
+            GrabCutApp::get().imageShow();
         } else if ((char)cmd == 'f') {
-            GrabCutApp::get().ForeGroundShow();
+            GrabCutApp::get().foreGroundShow();
         } else if ((char)cmd == 'b') {
-            GrabCutApp::get().BackGroundShow();
+            GrabCutApp::get().backGroundShow();
         } else if (cmd == 2490368) {
             GrabCutApp::get().gcIterCountInc();
         } else if (cmd == 2621440) {
             GrabCutApp::get().gcIterCountDec();
         } else if ((char)cmd == 'r') {
-            GrabCutApp::get().Reset();
+            GrabCutApp::get().reset();
         } else if ((char)cmd == 'm') {
-            GrabCutApp::get().ChangeIsDrawMarking();
+            GrabCutApp::get().changeIsDrawMarking();
         } else if ((char)cmd == 'n') {
-            GrabCutApp::get().ChangeVoidColor();
+            GrabCutApp::get().changeVoidColor();
         } else if ((char)cmd == 'u') {
-            GrabCutApp::get().MarkingCircleRadiusUp();
+            GrabCutApp::get().markingCircleRadiusUp();
         } else if ((char)cmd == 'd') {
-            GrabCutApp::get().MarkingCircleRadiusDown();
+            GrabCutApp::get().markingCircleRadiusDown();
         } else if ((char)cmd == 'q' or cmd == 27) {
             break;
         } else {

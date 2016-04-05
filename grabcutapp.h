@@ -20,36 +20,36 @@ class GrabCutApp
 public:
     static GrabCutApp & get();
     ~GrabCutApp();
-    bool ImageRead(const string &imFileName);
-    bool ImageShow();
-    bool ForeGroundShow();
-    bool BackGroundShow();
-    void NormalizeWindowSize() const;
+    bool imageRead(const string &imFileName);
+    bool imageShow();
+    bool foreGroundShow();
+    bool backGroundShow();
+    void normalizeWindowSize() const;
 
     string windowName() const;
 
-    void MouseCallBack(int event, int x, int y, int flags, void *userdata);
+    void mouseCallBack(int event, int x, int y, int flags, void *userdata);
 
     string savePath() const;
-    bool SetSavePath(const string &p);
-    bool SaveResults() const;
+    bool setSavePath(const string &p);
+    bool saveResults() const;
 
-    bool SegmentImage();
+    bool segmentImage();
     void gcIterCountInc();
     void gcIterCountDec();
     unsigned int gcIterCount() const;
-    void Reset();
-    void ChangeIsDrawMarking();
+    void reset();
+    void changeIsDrawMarking();
 
-    void MarkingCircleRadiusUp();
-    void MarkingCircleRadiusDown();
+    void markingCircleRadiusUp();
+    void markingCircleRadiusDown();
 
     GrabCutApp(const GrabCutApp &) = delete;
     GrabCutApp & operator=(const GrabCutApp &) = delete;
 
     static void help();
 
-    void ChangeVoidColor();
+    void changeVoidColor();
 
 private:   
     string windowName_;
@@ -97,12 +97,12 @@ private:
 
 private:
     explicit GrabCutApp();
-    void DrawImage();
-    void InitMaskByUserPoints();
-    void GenResults();
-    void SetBgFgMarkersToImage(Mat &img, const Scalar &fgMarker, const Scalar &bgMarker);
+    void drawImage();
+    void initMaskByUserPoints();
+    void genResults();
+    void setBgFgMarkersToImage(Mat &img, const Scalar &fgMarker, const Scalar &bgMarker);
 };
 
-void on_mouse(int event, int x, int y, int flags, void *param);
+void onMouse(int event, int x, int y, int flags, void *param);
 
 #endif // GRABCUTAPP_H
