@@ -75,8 +75,7 @@ bool GrabCutApp::imageShow()
         drawImage();
         cout << "show image" << endl;
         return true;
-    }
-    else {
+    } else {
         cerr <<  "image is not loaded" << endl;
         return false;
     }
